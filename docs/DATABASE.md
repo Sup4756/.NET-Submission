@@ -1,6 +1,6 @@
 # Thiết kế database dùng chung
 
-Ba ứng dụng tạo ba database độc lập, cùng schema và migration. Các bảng Identity mặc định được giữ nguyên; `AspNetUsers` được mở rộng để lưu hồ sơ.
+Ba ứng dụng tạo ba database độc lập, cùng schema; mỗi project có bộ migration riêng trong Data/Migrations. Các bảng Identity mặc định được giữ nguyên; `AspNetUsers` được mở rộng để lưu hồ sơ.
 
 ```mermaid
 erDiagram

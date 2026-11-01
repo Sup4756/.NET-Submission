@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ShoesShop.Core;
+using MVCShoesShop.Models;
 namespace MVCShoesShop.Controllers;
 
 public class AccountController(UserManager<AppUser> users, SignInManager<AppUser> signIn, Accounts accounts) : Controller

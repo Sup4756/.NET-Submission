@@ -79,45 +79,42 @@ Thanh toán COD là luồng mua hàng của bài tập; chưa tích hợp cổng
 
 ## Kiến trúc
 
-- **Razor**: `.cshtml` + `PageModel`, trực tiếp truy vấn `ShopDbContext` cho danh mục, chi tiết, giỏ hàng, đơn hàng và quản trị. Dùng các dịch vụ chung cho thao tác cần transaction/Identity.
+- **Razor**: `.cshtml` + `PageModel`, trực tiếp truy vấn `ShopDbContext` cho danh mục, chi tiết, giỏ hàng, đơn hàng và quản trị. Các thao tác transaction/Identity nằm trong thư mục Services của chính project.
 - **Blazor**: các Razor Components, routing/layout/components riêng; dùng **static server-side rendering (SSR)** và named form handlers. Các thao tác được xử lý trong component, không dùng MVC controller để dựng trang. SSR cho phép Identity ghi cookie ngay trong HTTP request. Không yêu cầu WebAssembly hoặc JavaScript cho nghiệp vụ.
 - **MVC**: controller nhận request, model/viewmodel giữ dữ liệu, `.cshtml` view hiển thị; các hành động POST có kiểm tra antiforgery.
-- **Shared/ShoesShop.Core**: entity, `ShopDbContext : IdentityDbContext<AppUser>`, migration SQL Server, nghiệp vụ giỏ hàng/đơn hàng và quản lý Identity. Ba web project dùng cùng component dữ liệu nhưng không chuyển hướng sang một web project khác.
+Mỗi project tự chứa:
+
+- `Models`: entity, thông tin nhập từ form và dữ liệu hiển thị.
+- `Data`: `ShopDbContext : IdentityDbContext<AppUser>`, migrations và khởi tạo database/Identity.
+- `Services`: xử lý giỏ hàng, đơn hàng và tài khoản.
+
+Solution chỉ có **ba web project độc lập**, không có project thư viện dùng chung hoặc project kiểm thử. Có thể mở solution riêng trong thư mục từng bài để build/chạy riêng. Code được sao chép vào ba bài, giao diện và thiết kế database giống nhau.
 - Ba giao diện dùng cùng CSS và hình minh họa, có bố cục responsive. Các file giao diện riêng ở từng project để thể hiện đúng kiến trúc bài học.
 
 Xem [kết quả kiểm thử](docs/VALIDATION.md), [thiết kế database](docs/DATABASE.md) và [SQL migration](docs/database.sql).
 
 ## Migrations
 
-Ứng dụng tự gọi `MigrateAsync` khi dùng SQL Server. Để tạo migration mới hoặc xuất SQL:
+Mỗi bài có migrations riêng trong `Data/Migrations`. Ứng dụng tự áp dụng migration khi chạy với SQL Server. Migration ban đầu giữ nguyên ID và cấu trúc bảng, nên không cần xóa database đã tạo từ phiên bản trước.
+
+Ví dụ với Razor Pages, chạy từ thư mục repository:
 
 ```sh
 dotnet tool restore
-dotnet ef migrations add TenThayDoi --project Shared/ShoesShop.Core --startup-project Razor/RazorShoesShop
-dotnet ef migrations script --idempotent --project Shared/ShoesShop.Core --startup-project Razor/RazorShoesShop --output docs/database.sql
+dotnet ef migrations add TenThayDoi --project Razor/RazorShoesShop --output-dir Data/Migrations
+dotnet ef migrations script --idempotent --project Razor/RazorShoesShop --output docs/database.sql
 ```
 
-Factory design-time dùng SQL Server và chỉ phục vụ tạo migration; kết nối runtime được chọn riêng cho từng web project. Không cần cài SQL Server khi chỉ build hoặc tạo SQL script.
+Với hai bài còn lại, thay đường dẫn project bằng `Blazor/BlazorShoesShop` hoặc `MVC/MVCShoesShop`. Mỗi lệnh chỉ tác động đến project đã chọn. Factory design-time phục vụ tạo migration; cấu hình runtime vẫn dùng database riêng của từng bài.
 
-## Kiểm thử
+## Chạy thử cơ bản
 
-```sh
-dotnet test tests/ShoesShop.Tests
-```
+Không cần cài Python, Playwright hay test runner. Sau khi build, chạy từng bài và thử:
 
-8 test database SQLite kiểm tra tồn kho, tổng tiền, transaction đặt hàng, trạng thái đơn hàng, hủy đơn, tách giỏ hàng theo user và xóa mềm. Chúng không thay thế kiểm thử SQL Server.
-
-Sau khi chạy cả ba ứng dụng với database Development dùng để kiểm thử:
-
-```sh
-python -m pip install -r tests/requirements.txt
-python tests/smoke.py
-# Có thể truyền một hoặc nhiều URL của ứng dụng thay cho bộ cổng mặc định.
-```
-
-Kiểm tra trình duyệt (tùy chọn): cài `playwright`, chạy `playwright install chromium`, sau đó `python tests/browser_smoke.py`. Có thể đặt `CHROMIUM_PATH` nếu Chromium đã có sẵn. Kiểm tra desktop/mobile và chụp ảnh vào `artifacts/screenshots`.
-
-Smoke test tạo tài khoản, sản phẩm và đơn hàng thực trong database được chọn. Nên dùng database phát triển riêng. Test kiểm tra HTTP, cookie Identity, quyền admin, lọc/phân trang, mua hàng, hồ sơ, CRUD sản phẩm, khóa/đổi quyền/xóa mềm và CSRF.
+1. Đăng ký/đăng nhập User, tìm sản phẩm và mở trang chi tiết.
+2. Thêm vào giỏ hàng, đổi số lượng, đặt hàng COD, xem đơn hàng và sửa hồ sơ.
+3. Đăng nhập Admin, kiểm tra các trang quản lý sản phẩm, đơn hàng, khách hàng và tài khoản.
+4. Thử sửa vai trò, khóa/mở khóa và xóa mềm một tài khoản mẫu tự tạo.
 
 ## Nếu chưa chạy được trên máy Windows
 

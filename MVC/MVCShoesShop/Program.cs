@@ -1,4 +1,4 @@
-using ShoesShop.Core;
+using MVCShoesShop.Models;
 var builder = WebApplication.CreateBuilder(args);
 builder.AddShop("StepShoesMvc");
 builder.Services.AddControllersWithViews(o => o.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute()));

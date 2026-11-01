@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ShoesShop.Core;
+using RazorShoesShop.Models;
 namespace RazorShoesShop.Pages;
 
 [Authorize(Roles = "Admin")]

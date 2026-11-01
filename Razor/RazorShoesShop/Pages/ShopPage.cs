@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Identity;
-using ShoesShop.Core;
+using RazorShoesShop.Models;
 namespace RazorShoesShop.Pages;
 
 public abstract class ShopPage(ShopDbContext db, ShopService shop, Queries queries, Accounts accounts, UserManager<AppUser> users, SignInManager<AppUser> signIn) : PageModel

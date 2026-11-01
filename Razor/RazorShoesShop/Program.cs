@@ -1,4 +1,4 @@
-using ShoesShop.Core;
+using RazorShoesShop.Models;
 var builder = WebApplication.CreateBuilder(args);
 builder.AddShop("StepShoesRazor");
 builder.Services.AddRazorPages();

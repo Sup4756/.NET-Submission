@@ -2,7 +2,7 @@ using System.Security.Claims;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
-using ShoesShop.Core;
+using BlazorShoesShop.Models;
 namespace BlazorShoesShop.Components;
 
 public abstract class ShopComponent : ComponentBase

@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ShoesShop.Core;
+using MVCShoesShop.Models;
 namespace MVCShoesShop.Controllers;
 
 public class ProductsController(ShopDbContext db, ShopService shop, Queries queries) : Controller

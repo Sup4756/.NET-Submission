@@ -1,5 +1,5 @@
 using BlazorShoesShop.Components;
-using ShoesShop.Core;
+using BlazorShoesShop.Models;
 var builder = WebApplication.CreateBuilder(args);
 builder.AddShop("StepShoesBlazor");
 builder.Services.AddRazorComponents();
