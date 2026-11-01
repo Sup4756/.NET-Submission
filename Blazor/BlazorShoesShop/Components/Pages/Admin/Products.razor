@@ -1,0 +1,14 @@
+@page "/Admin/Products"
+@inherits ShopComponent
+@attribute [Authorize(Roles="Admin")]
+<PageTitle>STEP Shoes</PageTitle>
+@if(message is not null){<div class="notice" role="status">@message</div>}
+<div class="section-heading"><div><span class="eyebrow">DANH MỤC CỬA HÀNG</span><h1>Quản lý sản phẩm</h1></div><a class="button" href="/Admin/Products/Edit">+ Thêm sản phẩm</a></div><form class="search-row" method="get"><input name="q" value="@s.Q" placeholder="Tìm theo tên hoặc thương hiệu"/><button>Tìm kiếm</button></form><div class="panel table-wrap"><table><thead><tr><th>Sản phẩm</th><th>Thương hiệu</th><th>Danh mục</th><th>Giá</th><th>Tồn kho</th><th>Thao tác</th></tr></thead><tbody>@foreach(var p in s.Products){<tr><td><a href="/Products/@p.Id">@p.Name</a></td><td>@p.Brand</td><td>@p.Category</td><td>@p.Price.ToString("N0") ₫</td><td>@p.Stock</td><td class="actions"><a href="/Products/@p.Id">Xem</a><a href="/Admin/Products/Edit/@p.Id">Sửa</a><form method="post" @onsubmit="Delete" @formname="@($"product-{p.Id}")"><AntiforgeryToken/><input type="hidden" name="id" value="@p.Id"/><button class="danger" onclick="return confirm('Xóa sản phẩm này?')">Xóa</button></form></td></tr>}</tbody></table>@if(s.Products.Count==0){<p>Không có sản phẩm phù hợp.</p>}</div>
+@code {
+
+[SupplyParameterFromQuery(Name="q")]public string? Q{get;set;}
+[SupplyParameterFromForm(Name="id")]public int ItemId{get;set;}
+protected override async Task OnInitializedAsync(){s.Products=await shop.Catalog(Q).ToListAsync();s.Q=Q;}
+async Task Delete()=>await Run(async()=>{var p=await db.Products.FindAsync(ItemId)??throw new BusinessException("Không tìm thấy sản phẩm.");p.IsDeleted=true;db.CartItems.RemoveRange(db.CartItems.Where(x=>x.ProductId==ItemId));await db.SaveChangesAsync();nav.NavigateTo("/Admin/Products");});
+
+}

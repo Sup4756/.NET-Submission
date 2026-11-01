@@ -7,4 +7,5 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
 
+<ItemGroup><ProjectReference Include="../../Shared/ShoesShop.Core/ShoesShop.Core.csproj" /></ItemGroup>
 </Project>

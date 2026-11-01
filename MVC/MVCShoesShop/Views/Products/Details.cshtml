@@ -1,0 +1,4 @@
+@model ShoesShop.Core.ShopState
+@{ var s=Model; }
+<div asp-validation-summary="All" class="validation"></div>
+@if(s.Product is {} p){<a class="back" href="/Products">← Tất cả sản phẩm</a><div class="detail"><div class="detail-art tone-@(p.Id%3)"><img src="/images/shoe.svg" alt="@p.Name"/></div><section class="detail-info"><span class="eyebrow">@p.Brand · @p.Category</span><h1>@p.Name</h1><div class="price">@p.Price.ToString("N0") ₫</div><p>@p.Description</p><p class="muted">Còn @p.Stock sản phẩm · Hình minh họa</p><form method="post" action="@($"/Products/{p.Id}/Add")">@Html.AntiForgeryToken()<input type="number" name="quantity" min="1" max="99" value="1" aria-label="Số lượng"/><button disabled="@(p.Stock==0)">Thêm vào giỏ hàng →</button></form><div class="detail-note">✓ Kiểm tra tồn kho khi đặt hàng<br/>✓ Giỏ hàng được lưu theo tài khoản của bạn</div></section></div>}

@@ -1,0 +1,16 @@
+@page "/Cart"
+@inherits ShopComponent
+@attribute [Authorize]
+<PageTitle>STEP Shoes</PageTitle>
+@if(message is not null){<div class="notice" role="status">@message</div>}
+<div class="page-heading"><span class="eyebrow">MUA SẮM CỦA BẠN</span><h1>Giỏ hàng</h1></div>@if(s.Cart.Count==0){<div class="empty panel"><h2>Giỏ hàng đang trống</h2><p>Chọn đôi giày yêu thích để bắt đầu.</p><a class="button" href="/Products">Tiếp tục mua sắm</a></div>}else{<div class="cart-layout"><section class="panel">@foreach(var item in s.Cart){<div class="cart-item"><img class="cart-art" src="/images/shoe.svg" alt="@item.Product.Name"/><div><small>@item.Product.Brand</small><h3><a href="/Products/@item.ProductId">@item.Product.Name</a></h3><strong>@item.Product.Price.ToString("N0") ₫</strong></div><form method="post" @onsubmit="Update" @formname="@($"cart-{item.Id}")"><AntiforgeryToken/><input type="hidden" name="id" value="@item.Id"/><input name="quantity" type="number" min="0" max="99" value="@item.Quantity" aria-label="Số lượng"/><button class="secondary">Cập nhật</button><button class="danger" name="quantity" value="0" type="submit" onclick="this.form.querySelector('input[name=quantity]').value=0">Xóa</button></form></div>}<p class="muted">Nhập 0 rồi cập nhật để xóa sản phẩm khỏi giỏ hàng.</p></section><aside class="panel"><h2>Thông tin giao hàng</h2><div class="row-between total"><span>Tổng cộng</span><strong>@s.Cart.Sum(x=>x.Product.Price*x.Quantity).ToString("N0") ₫</strong></div><form method="post" @onsubmit="Checkout" @formname="checkout"><AntiforgeryToken/><label>Người nhận<input name="Input.Recipient" required maxlength="100" value="@s.Checkout.Recipient"/></label><label>Số điện thoại<input name="Input.Phone" required type="tel" value="@s.Checkout.Phone"/></label><label>Địa chỉ giao hàng<textarea name="Input.ShippingAddress" required maxlength="350">@s.Checkout.ShippingAddress</textarea></label><p class="muted">Thanh toán khi nhận hàng (COD).</p><button>Đặt hàng →</button></form></aside></div>}
+@code {
+
+[SupplyParameterFromForm]public CheckoutInput? Input{get;set;}
+[SupplyParameterFromForm(Name="id")]public int ItemId{get;set;}
+[SupplyParameterFromForm(Name="quantity")]public int Quantity{get;set;}
+protected override async Task OnInitializedAsync(){s.Cart=await shop.Cart(UserId);Input??=new();s.Checkout=Input;}
+async Task Update()=>await Run(async()=>{await shop.UpdateCart(UserId,ItemId,Quantity);nav.NavigateTo("/Cart");});
+async Task Checkout(){if(Validate(Input!))await Run(async()=>{await shop.Checkout(UserId,Input!);nav.NavigateTo("/Orders");});}
+
+}

@@ -1,0 +1,15 @@
+@page "/Admin/Products/Edit"
+@page "/Admin/Products/Edit/{Id:int}"
+@inherits ShopComponent
+@attribute [Authorize(Roles="Admin")]
+<PageTitle>STEP Shoes</PageTitle>
+@if(message is not null){<div class="notice" role="status">@message</div>}
+@if(s.Product is not null){<div class="page-heading"><span class="eyebrow">SẢN PHẨM</span><h1>@(s.Product!.Id==0?"Thêm sản phẩm":"Sửa sản phẩm")</h1></div><section class="panel editor"><form method="post" @onsubmit="Save" @formname="product"><AntiforgeryToken/><div class="form-grid"><label>Tên sản phẩm<input name="Input.Name" value="@s.Product.Name" required maxlength="120"/></label><label>Thương hiệu<input name="Input.Brand" value="@s.Product.Brand" required maxlength="60"/></label><label>Danh mục<input name="Input.Category" value="@s.Product.Category" required maxlength="60"/></label><label>Giá (₫)<input name="Input.Price" type="number" min="1000" max="100000000" value="@s.Product.Price" required/></label><label>Tồn kho<input name="Input.Stock" type="number" min="0" max="100000" value="@s.Product.Stock" required/></label><label class="full">Mô tả<textarea name="Input.Description" required maxlength="3000">@s.Product.Description</textarea></label></div><button>Lưu sản phẩm</button><a href="/Admin/Products">Quay lại</a></form></section>}else{<h1>Không tìm thấy sản phẩm</h1>}
+@code {
+
+[Parameter]public int Id{get;set;}
+[SupplyParameterFromForm]public Product? Input{get;set;}
+protected override async Task OnInitializedAsync(){Input??=Id==0?new Product():await db.Products.FindAsync(Id);s.Product=Input;if(Input is null)Http.Response.StatusCode=404;}
+async Task Save(){if(Input is null||!Validate(Input))return;if(Id==0){Input.Id=0;db.Products.Add(Input);}else{var p=await db.Products.FindAsync(Id);if(p is null)return;p.Name=Input.Name;p.Brand=Input.Brand;p.Category=Input.Category;p.Price=Input.Price;p.Stock=Input.Stock;p.Description=Input.Description;}await db.SaveChangesAsync();nav.NavigateTo("/Admin/Products");}
+
+}

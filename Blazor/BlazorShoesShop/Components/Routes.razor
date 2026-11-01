@@ -1,6 +1,1 @@
-﻿<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
-    <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="routeData" Selector="h1" />
-    </Found>
-</Router>
+<Router AppAssembly="typeof(Program).Assembly"><Found Context="routeData"><AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)"><NotAuthorized><p>Bạn cần đăng nhập với tài khoản có quyền phù hợp.</p><a href="/Account/Login">Đăng nhập</a></NotAuthorized></AuthorizeRouteView><FocusOnNavigate RouteData="routeData" Selector="h1"/></Found><NotFound><LayoutView Layout="typeof(MainLayout)"><h1>Không tìm thấy trang</h1><a href="/Products">Về cửa hàng</a></LayoutView></NotFound></Router>

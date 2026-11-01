@@ -1,27 +1,36 @@
 using BlazorShoesShop.Components;
-
+using ShoesShop.Core;
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
-
+builder.AddShop("StepShoesBlazor");
+builder.Services.AddRazorComponents();
+builder.Services.AddCascadingAuthenticationState();
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
-app.UseHttpsRedirection();
-
+if (!app.Environment.IsDevelopment()) { app.UseExceptionHandler("/Error"); app.UseHsts(); app.UseHttpsRedirection(); }
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseAntiforgery();
-
-app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
-
-app.Run();
+// Identity cookies must be written in an HTTP request; logout remains a CSRF-protected POST.
+app.MapPost("/Account/Logout", async (Microsoft.AspNetCore.Identity.SignInManager<AppUser> signIn) =>
+{
+    await signIn.SignOutAsync();
+    return Results.LocalRedirect("/");
+}).RequireAuthorization().AddEndpointFilter(async (context, next) =>
+{
+    try
+    {
+        await context.HttpContext.RequestServices
+            .GetRequiredService<Microsoft.AspNetCore.Antiforgery.IAntiforgery>()
+            .ValidateRequestAsync(context.HttpContext);
+    }
+    catch (Microsoft.AspNetCore.Antiforgery.AntiforgeryValidationException)
+    {
+        return Results.BadRequest();
+    }
+    return await next(context);
+});
+app.MapRazorComponents<App>();
+await app.InitializeShop();
+await app.RunAsync();
+public partial class Program;

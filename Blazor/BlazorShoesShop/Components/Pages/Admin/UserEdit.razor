@@ -1,0 +1,14 @@
+@page "/Admin/Accounts/Edit/{Id}"
+@inherits ShopComponent
+@attribute [Authorize(Roles="Admin")]
+<PageTitle>STEP Shoes</PageTitle>
+@if(message is not null){<div class="notice" role="status">@message</div>}
+@if(s.UserId is not null){<div class="page-heading"><span class="eyebrow">TÀI KHOẢN</span><h1>@(s.IsAdmin?"Sửa tài khoản":"Thông tin cá nhân")</h1></div><section class="panel editor"><form method="post" @onsubmit="Save" @formname="profile"><AntiforgeryToken/><div class="form-grid"><label>Họ và tên<input name="Input.FullName" value="@s.Profile.FullName" required maxlength="100"/></label><label>Email<input name="Input.Email" type="email" value="@s.Profile.Email" required/></label><label>Giới tính<select name="Input.Gender">@foreach(var g in new[]{"","Nam","Nữ","Khác"}){<option value="@g" selected="@(s.Profile.Gender==g)">@(g==""?"Chưa chọn":g)</option>}</select></label><label>Ngày sinh<input name="Input.DateOfBirth" type="date" value="@(s.Profile.DateOfBirth?.ToString("yyyy-MM-dd"))"/></label><label>Số điện thoại<input name="Input.PhoneNumber" type="tel" value="@s.Profile.PhoneNumber"/></label><label>Thành phố<input name="Input.City" value="@s.Profile.City" maxlength="100"/></label><label class="full">Địa chỉ<input name="Input.Address" value="@s.Profile.Address" maxlength="250"/></label>@if(s.IsAdmin){<label>Vai trò<select name="Input.Role"><option value="User" selected="@(s.Profile.Role=="User")">User</option><option value="Admin" selected="@(s.Profile.Role=="Admin")">Admin</option></select></label><label>Trạng thái<select name="Input.Locked"><option value="false" selected="@(!s.Profile.Locked)">Hoạt động</option><option value="true" selected="@s.Profile.Locked">Khóa tài khoản</option></select></label>}</div><button>Lưu thay đổi</button></form></section>}
+@code {
+
+[Parameter]public string Id{get;set;}="";
+[SupplyParameterFromForm]public ProfileInput? Input{get;set;}
+protected override async Task OnInitializedAsync(){if(!await db.Users.AnyAsync(x=>x.Id==Id)){Http.Response.StatusCode=404;message="Không tìm thấy tài khoản.";return;}Input??=await accounts.Get(Id);s.Profile=Input;s.IsAdmin=true;s.UserId=Id;}
+async Task Save(){if(Validate(Input!))await Run(async()=>{await accounts.Save(Id,Input!,true,UserId);nav.NavigateTo("/Admin/Accounts");});}
+
+}

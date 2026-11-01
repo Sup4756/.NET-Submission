@@ -1,0 +1,5 @@
+@page "/Account/Login"
+@model RazorShoesShop.Pages.AccountLoginModel
+@{ var s=Model.State; }
+<div asp-validation-summary="All" class="validation"></div>
+<section class="auth panel"><span class="eyebrow">CHÀO MỪNG TRỞ LẠI</span><h1>Đăng nhập</h1><p class="muted">Tiếp tục hành trình cùng STEP Shoes.</p><form method="post" action="/Account/Login">@Html.AntiForgeryToken()<label>Email<input type="email" name="Input.Email" required value="@s.Login.Email" autocomplete="username"/></label><label>Mật khẩu<input type="password" name="Input.Password" required autocomplete="current-password"/></label><button>Đăng nhập →</button></form><p>Chưa có tài khoản? <a href="/Account/Register">Đăng ký ngay</a></p></section>

@@ -1,23 +1,5 @@
-﻿@inherits LayoutComponentBase
-
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+<header class="topbar"><a class="logo" href="/">STEP<span>®</span></a><nav><a href="/">Trang chủ</a><a href="/Products">Sản phẩm</a></nav><form class="nav-search" action="/Products" method="get"><input name="q" placeholder="Tìm đôi giày của bạn..." aria-label="Tìm sản phẩm"/><button aria-label="Tìm kiếm">⌕</button></form><a class="cart-link" href="/Cart">♧ Giỏ hàng</a>@if(Http.User.Identity?.IsAuthenticated==true){<details class="profile-menu"><summary>◉ Tài khoản</summary><div><a href="/Profile">Thông tin cá nhân</a><a href="/Orders">Đơn hàng của tôi</a>@if(Http.User.IsInRole("Admin")){<a href="/Admin">Trang quản trị</a>}<form method="post" action="/Account/Logout"><AntiforgeryToken/><button class="link">Đăng xuất</button></form></div></details>}else{<a href="/Account/Login">Đăng nhập</a>}</header>
+<div class="@(Admin?"admin-shell":"store-shell")">@if(Admin){<aside class="sidebar"><div class="admin-account"><span class="avatar">A</span><strong>@Http.User.Identity?.Name</strong><small>Quản trị viên</small></div><nav><a href="/Admin">▦ Trang chủ admin</a><a href="/Admin/Orders">▤ Quản lý đơn hàng</a><a href="/Admin/Products">◇ Quản lý sản phẩm</a><a href="/Admin/Customers">♧ Quản lý khách hàng</a><a href="/Admin/Accounts">◉ Quản lý tài khoản</a></nav><a href="/Products">← Về cửa hàng</a></aside>}<main>@Body</main></div><footer><a class="logo" href="/">STEP<span>®</span></a><span>Mỗi bước đi, một phong cách.</span><small>Razor Pages · Blazor · MVC / ASP.NET Core 10</small></footer>
+@code{[CascadingParameter]public HttpContext Http{get;set;}=null!;bool Admin=>Http.Request.Path.StartsWithSegments("/Admin");}

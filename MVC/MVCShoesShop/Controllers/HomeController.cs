@@ -1,25 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using MVCShoesShop.Models;
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using ShoesShop.Core;
+namespace MVCShoesShop.Controllers;
 
-namespace MVCShoesShop.Controllers
+public class HomeController(ShopDbContext db) : Controller
 {
-    public class HomeController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-    }
+    public async Task<IActionResult> Index() => View(new ShopState { Products = await db.Products.Take(4).ToListAsync() });
+    public IActionResult Error() => Problem("Có lỗi xảy ra. Vui lòng thử lại.");
 }

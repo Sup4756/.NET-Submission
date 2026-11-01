@@ -1,0 +1,5 @@
+@page "/Account/Denied"
+@model RazorShoesShop.Pages.AccountDeniedModel
+@{ var s=Model.State; }
+<div asp-validation-summary="All" class="validation"></div>
+<section class="empty panel"><h1>Không có quyền truy cập</h1><p>Tài khoản của bạn không có quyền quản trị.</p><a href="/Products">Về cửa hàng</a></section>

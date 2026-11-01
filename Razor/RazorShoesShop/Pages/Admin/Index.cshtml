@@ -1,0 +1,5 @@
+@page "/Admin"
+@model RazorShoesShop.Pages.AdminIndexModel
+@{ var s=Model.State; }
+<div asp-validation-summary="All" class="validation"></div>
+<div class="page-heading"><span class="eyebrow">TỔNG QUAN HỆ THỐNG</span><h1>Trang chủ quản trị</h1><p>Chào mừng trở lại. Cùng theo dõi cửa hàng hôm nay.</p></div><div class="stats"><article class="panel"><span>Sản phẩm</span><strong>@s.Count</strong><a href="/Admin/Products">Quản lý →</a></article><article class="panel"><span>Đơn hàng</span><strong>@s.OrderCount</strong><a href="/Admin/Orders">Xem đơn hàng →</a></article><article class="panel"><span>Tài khoản</span><strong>@s.CustomerCount</strong><a href="/Admin/Accounts">Quản lý →</a></article><article class="panel"><span>Giá trị đơn chưa hủy</span><strong>@s.Revenue.ToString("N0") ₫</strong></article></div><section class="panel"><h2>Quản lý cửa hàng STEP</h2><p class="muted">Sử dụng thanh điều hướng bên trái để cập nhật sản phẩm, xử lý đơn hàng và quản lý khách hàng.</p><a class="button secondary" href="/Products">Xem cửa hàng →</a></section>

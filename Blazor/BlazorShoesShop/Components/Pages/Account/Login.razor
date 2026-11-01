@@ -1,0 +1,13 @@
+@page "/Account/Login"
+@inherits ShopComponent
+
+<PageTitle>STEP Shoes</PageTitle>
+@if(message is not null){<div class="notice" role="status">@message</div>}
+<section class="auth panel"><span class="eyebrow">CHÀO MỪNG TRỞ LẠI</span><h1>Đăng nhập</h1><p class="muted">Tiếp tục hành trình cùng STEP Shoes.</p><form method="post" @onsubmit="Submit" @formname="login"><AntiforgeryToken/><label>Email<input type="email" name="Input.Email" required value="@s.Login.Email" autocomplete="username"/></label><label>Mật khẩu<input type="password" name="Input.Password" required autocomplete="current-password"/></label><button>Đăng nhập →</button></form><p>Chưa có tài khoản? <a href="/Account/Register">Đăng ký ngay</a></p></section>
+@code {
+
+[SupplyParameterFromForm]public LoginInput? Input{get;set;}
+protected override void OnInitialized(){Input??=new();s.Login=Input;}
+async Task Submit(){if(!Validate(Input!))return;var result=await signIn.PasswordSignInAsync(Input!.Email,Input.Password,false,true);if(result.Succeeded){var u=await users.FindByEmailAsync(Input.Email);nav.NavigateTo(await users.IsInRoleAsync(u!,"User")?"/Products":"/Admin");}else message="Đăng nhập không thành công. Kiểm tra thông tin hoặc trạng thái tài khoản.";}
+
+}

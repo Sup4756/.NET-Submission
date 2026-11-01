@@ -1,0 +1,9 @@
+@page "/Account/Denied"
+@inherits ShopComponent
+
+<PageTitle>STEP Shoes</PageTitle>
+@if(message is not null){<div class="notice" role="status">@message</div>}
+<section class="empty panel"><h1>Không có quyền truy cập</h1><p>Tài khoản của bạn không có quyền quản trị.</p><a href="/Products">Về cửa hàng</a></section>
+@code {
+
+}

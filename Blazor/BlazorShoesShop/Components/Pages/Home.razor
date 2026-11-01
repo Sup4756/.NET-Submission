@@ -1,7 +1,9 @@
-﻿@page "/"
+@page "/"
+@inherits ShopComponent
 
-<PageTitle>Home</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<PageTitle>STEP Shoes</PageTitle>
+@if(message is not null){<div class="notice" role="status">@message</div>}
+<section class="hero"><div><span class="eyebrow">STEP SHOES · BỘ SƯU TẬP 2026</span><h1>Bước đi mới.<br/>Phong cách riêng.</h1><p>Khám phá những đôi giày dành cho nhịp sống của bạn.<br/>Thoải mái mỗi ngày, tự tin trên mọi hành trình.</p><a class="button" href="/Products">Khám phá sản phẩm →</a></div><div class="hero-art"><img src="/images/shoe.svg" alt="Giày thể thao STEP"/><span>MOVE YOUR WAY.</span></div></section><div class="benefits"><span>✓ Sản phẩm chính hãng</span><span>✓ Chất liệu bền bỉ</span><span>✓ Chăm sóc tận tâm</span></div><div class="section-heading"><div><span class="eyebrow">ĐƯỢC YÊU THÍCH</span><h2>Lựa chọn cho mỗi ngày</h2></div><a href="/Products">Xem tất cả →</a></div><div class="product-grid">@foreach(var p in s.Products){<article class="product-card"><a class="product-art tone-@(p.Id%3)" href="/Products/@p.Id"><span class="tag">@p.Category</span><img src="/images/shoe.svg" alt="@p.Name" loading="lazy"/></a><div class="product-info"><small>@p.Brand</small><h3><a href="/Products/@p.Id">@p.Name</a></h3><div class="row-between"><strong>@p.Price.ToString("N0") ₫</strong><a class="round-link" href="/Products/@p.Id" aria-label="Xem chi tiết">→</a></div></div></article>}</div>
+@code {
+protected override async Task OnInitializedAsync(){s.Products=await db.Products.Take(4).ToListAsync();}
+}

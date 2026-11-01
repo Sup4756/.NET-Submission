@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Shared/ShoesShop.Core/ShoesShop.Core.csproj" />
+  <Project Path="Razor/RazorShoesShop/RazorShoesShop.csproj" />
+  <Project Path="Blazor/BlazorShoesShop/BlazorShoesShop.csproj" />
+  <Project Path="MVC/MVCShoesShop/MVCShoesShop.csproj" />
+  <Project Path="tests/ShoesShop.Tests/ShoesShop.Tests.csproj" />
+</Solution>
